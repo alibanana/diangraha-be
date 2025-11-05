@@ -10,17 +10,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = AchievementController.class)
@@ -40,8 +38,15 @@ public class AchievementControllerTest {
 
     @Test
     public void testGetAllAchievements() throws Exception {
-        AchievementResponse response1 = new AchievementResponse(1L, "Achievement 1", "url1");
-        AchievementResponse response2 = new AchievementResponse(2L, "Achievement 2", "url2");
+
+        AchievementResponse response1 = new AchievementResponse(
+                1L, "Achievement 1", "url1", Instant.now()
+        );
+
+        AchievementResponse response2 = new AchievementResponse(
+                2L, "Achievement 2", "url2", Instant.now()
+        );
+
         List<AchievementResponse> responses = Arrays.asList(response1, response2);
 
         when(service.getAllAchievements()).thenReturn(responses);

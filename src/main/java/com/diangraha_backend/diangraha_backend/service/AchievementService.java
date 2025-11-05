@@ -79,6 +79,7 @@ public class AchievementService {
                 .id(achievement.getId())
                 .title(achievement.getTitle())
                 .imageUrl(achievement.getImageUrl())
+                .createdAt(achievement.getCreatedAt())
                 .build();
     }
 }

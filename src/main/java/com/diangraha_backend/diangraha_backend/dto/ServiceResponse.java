@@ -2,6 +2,7 @@ package com.diangraha_backend.diangraha_backend.dto;
 
 import lombok.*;
 
+import java.time.Instant;
 import java.util.List;
 
 @Getter
@@ -18,5 +19,6 @@ public class ServiceResponse {
     private String imageUrl;
     private List<ServiceFeatureResponse> features;
     private List<SubServiceResponse> subServices;
+    private Instant createdAt;
 }
 

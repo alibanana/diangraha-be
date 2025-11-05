@@ -3,6 +3,9 @@ package com.diangraha_backend.diangraha_backend.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.Instant;
 
 @Setter
 @Getter
@@ -17,4 +20,8 @@ public class Client {
     private String name;
     @Column (name = "image_url")
     private String imageUrl;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private Instant createdAt;
 }

@@ -385,6 +385,7 @@ public class ServiceService {
                                         .build())
                                 .toList()
                         : List.of())
+                .createdAt(service.getCreatedAt())
                 .build();
     }
 

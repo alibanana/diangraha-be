@@ -67,6 +67,7 @@ public class ClientService {
                 .id(client.getId())
                 .name(client.getName())
                 .imageUrl(client.getImageUrl())
+                .createdAt(client.getCreatedAt())
                 .build();
     }
 }

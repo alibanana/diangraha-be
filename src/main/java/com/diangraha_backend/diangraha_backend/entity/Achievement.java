@@ -2,6 +2,9 @@ package com.diangraha_backend.diangraha_backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.Instant;
 
 @Entity
 @Table(name = "achievements")
@@ -20,4 +23,8 @@ public class Achievement {
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private Instant createdAt;
 }
