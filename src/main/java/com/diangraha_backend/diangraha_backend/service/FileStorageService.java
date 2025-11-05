@@ -24,6 +24,6 @@ public class FileStorageService {
         Files.copy(file.getInputStream(), filePath);
 
         // Return full URL with port 8080 for proper access
-        return "http://103.103.20.23:8080/uploads/" + subFolder + "/" + fileName;
+        return "https://diangraha-be-production.up.railway.app/uploads/" + subFolder + "/" + fileName;
     }
 }
