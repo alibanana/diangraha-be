@@ -3,7 +3,9 @@ package com.diangraha_backend.diangraha_backend.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +30,7 @@ public class ServiceEntity {
     @Column(name = "long_desc")
     private String longDesc;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", columnDefinition = "LONGTEXT")
     private String imageUrl;
 
     @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -40,4 +42,8 @@ public class ServiceEntity {
     @Builder.Default
     @JsonManagedReference
     private List<SubService> subServices = new ArrayList<>();
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private Instant createdAt;
 }
