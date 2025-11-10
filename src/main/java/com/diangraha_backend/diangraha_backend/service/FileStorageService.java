@@ -1,8 +1,10 @@
 package com.diangraha_backend.diangraha_backend.service;
 
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 
@@ -10,29 +12,29 @@ import java.util.Base64;
 public class FileStorageService {
 
     /**
-     * Konversi file upload menjadi Base64 tanpa menyimpannya ke folder.
-     * @param file file yang diupload dari API (MultipartFile)
-     * @param subFolder tidak dipakai lagi (hanya untuk kompatibilitas)
-     * @return string Base64 lengkap dengan prefix MIME (data:image/png;base64,....)
+     * Compress image, convert to Base64, return Base64 string with MIME type prefix.
      */
     public String storeFile(MultipartFile file, String subFolder) throws IOException {
+
         if (file == null || file.isEmpty()) {
             return null;
         }
 
-        // Ambil byte array dari file
-        byte[] bytes = file.getBytes();
-
-        // Dapatkan tipe MIME file (contoh: image/png)
         String mimeType = file.getContentType();
-        if (mimeType == null) {
-            mimeType = "application/octet-stream";
-        }
+        if (mimeType == null) mimeType = "image/jpeg";
 
-        // Encode ke Base64
-        String base64 = Base64.getEncoder().encodeToString(bytes);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        Thumbnails
+                .of(file.getInputStream())
+                .size(900, 600)            // compress resolution (ubah sesuai kebutuhan)
+                .outputQuality(0.6)        // compress quality: 0.0 (kurang) - 1.0 (full quality)
+                .outputFormat("jpg")       // pastikan konsisten ke JPG agar lebih kecil
+                .toOutputStream(outputStream);
 
-        // Return dengan prefix MIME biar bisa langsung dipakai di <img src="...">
+        byte[] compressedBytes = outputStream.toByteArray();
+
+        String base64 = Base64.getEncoder().encodeToString(compressedBytes);
+
         return "data:" + mimeType + ";base64," + base64;
     }
 }

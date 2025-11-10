@@ -144,13 +144,55 @@ public class ServiceService {
                 .collect(Collectors.toList());
     }
 
+    public List<ServiceListResponse> getAllServicesLite() {
+        return serviceRepository.findAll().stream()
+                .map(s -> new ServiceListResponse(
+                        s.getId(),
+                        s.getName(),
+                        s.getLongDesc(),
+                        s.getImageUrl()
+                ))
+                .toList();
+    }
 
     // GET BY ID
     public ServiceResponse getById(Long id) {
-        ServiceEntity service = serviceRepository.findByIdWithDetails(id)
+
+        ServiceEntity service = serviceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Service not found"));
-        return mapToResponse(service);
+
+        List<ServiceEntity> serviceWithFeatures = serviceRepository.findAllWithFeatures();
+        List<ServiceEntity> serviceWithSubs = serviceRepository.findAllWithSubServices();
+        List<SubService> subServicesWithWorks = serviceRepository.findAllSubServicesWithWorks();
+
+        ServiceEntity target = serviceWithFeatures.stream()
+                .filter(s -> s.getId().equals(id))
+                .findFirst()
+                .orElse(service);
+
+        Optional<ServiceEntity> subs = serviceWithSubs.stream()
+                .filter(s -> s.getId().equals(id))
+                .findFirst();
+
+        if (subs.isPresent()) {
+            target.setSubServices(subs.get().getSubServices());
+        }
+
+        if (target.getSubServices() != null) {
+            Map<Long, List<SubService>> subServiceMap = subServicesWithWorks.stream()
+                    .collect(Collectors.groupingBy(SubService::getId));
+
+            for (SubService sub : target.getSubServices()) {
+                List<SubService> found = subServiceMap.get(sub.getId());
+                if (found != null && !found.isEmpty()) {
+                    sub.setWorks(found.get(0).getWorks());
+                }
+            }
+        }
+
+        return mapToResponse(target);
     }
+
 
     // Get By ID for Sub Services
 
