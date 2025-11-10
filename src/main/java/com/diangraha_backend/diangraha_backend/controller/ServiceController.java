@@ -57,6 +57,13 @@ public class ServiceController {
         return ResponseEntity.ok(serviceService.addSubServiceWork(subServiceId, request));
     }
 
+
+    @GetMapping("/lite")
+    public ResponseEntity<List<ServiceListResponse>> getLiteServices() {
+        return ResponseEntity.ok(serviceService.getAllServicesLite());
+    }
+
+
     @GetMapping
     public ResponseEntity<List<ServiceResponse>> getAllServices() {
         return ResponseEntity.ok(serviceService.getAllServices());
