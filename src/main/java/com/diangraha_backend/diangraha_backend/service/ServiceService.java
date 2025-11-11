@@ -155,6 +155,15 @@ public class ServiceService {
                 .toList();
     }
 
+    public List<ServiceMenuResponse> getAllServicesMenu() {
+        return serviceRepository.findAll().stream()
+                .map(s -> new ServiceMenuResponse(
+                        s.getId(),
+                        s.getName()
+                ))
+                .toList();
+    }
+
     // GET BY ID
     public ServiceResponse getById(Long id) {
 

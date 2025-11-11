@@ -22,7 +22,7 @@ public class ClientService {
                 .collect(Collectors.toList());
     }
 
-        public ClientResponse create(ClientRequest request, MultipartFile imageUrl) throws IOException {
+    public ClientResponse create(ClientRequest request, MultipartFile imageUrl) throws IOException {
             Client client = new Client();
             client.setName(request.getName());
 
