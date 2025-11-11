@@ -1,7 +1,8 @@
 package com.diangraha_backend.diangraha_backend.service;
 
+import com.diangraha_backend.diangraha_backend.util.ImageUtil;
 import lombok.extern.slf4j.Slf4j;
-import net.coobird.thumbnailator.Thumbnails;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,7 +12,6 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -20,6 +20,9 @@ import java.util.UUID;
 public class FileStorageService {
 
     private final S3Client s3Client;
+
+    @Autowired
+    private ImageUtil imageUtil;
 
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
@@ -31,20 +34,10 @@ public class FileStorageService {
         this.s3Client = s3Client;
     }
 
-    private byte[] compressImage(MultipartFile file) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Thumbnails.of(file.getInputStream())
-                .size(900, 600)
-                .outputQuality(0.6)
-                .outputFormat("jpg")
-                .toOutputStream(baos);
-        return baos.toByteArray();
-    }
-
     public String storeFile(MultipartFile file, String subFolder, String oldImageUrl) throws IOException {
         if (file == null || file.isEmpty()) return oldImageUrl;
 
-        byte[] compressedImage = compressImage(file);
+        byte[] compressedImage = imageUtil.compressImage(file).getBytes();
 
         String fileName = subFolder + "/" + UUID.randomUUID() + ".jpg";
 
