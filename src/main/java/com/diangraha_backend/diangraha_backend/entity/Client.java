@@ -10,7 +10,7 @@ import java.time.Instant;
 @Setter
 @Getter
 @Entity
-@Table (name = "vmn")
+@Table (name = "clients")
 
 public class Client {
     @Id
