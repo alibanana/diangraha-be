@@ -1,7 +1,9 @@
 package com.diangraha_backend.diangraha_backend.service;
 
+import com.diangraha_backend.diangraha_backend.dto.MultipartImageDto;
 import com.diangraha_backend.diangraha_backend.util.ImageUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -37,18 +39,19 @@ public class FileStorageService {
     public String storeFile(MultipartFile file, String subFolder, String oldImageUrl) throws IOException {
         if (file == null || file.isEmpty()) return oldImageUrl;
 
-        byte[] compressedImage = imageUtil.compressImage(file).getBytes();
+        MultipartFile compressedImage = imageUtil.compressImage(file);
 
-        String fileName = subFolder + "/" + UUID.randomUUID() + ".jpg";
+        String fileName = subFolder + "/" + UUID.randomUUID() + "." +
+                FilenameUtils.getExtension(file.getOriginalFilename()).toLowerCase();
 
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(fileName)
-                .contentType("image/jpeg")
+                .contentType(compressedImage.getContentType())
                 .acl(ObjectCannedACL.PUBLIC_READ)
                 .build();
 
-        s3Client.putObject(request, RequestBody.fromBytes(compressedImage));
+        s3Client.putObject(request, RequestBody.fromBytes(compressedImage.getBytes()));
 
         if (oldImageUrl != null && !oldImageUrl.isBlank()) {
             deleteFileByUrl(oldImageUrl);
