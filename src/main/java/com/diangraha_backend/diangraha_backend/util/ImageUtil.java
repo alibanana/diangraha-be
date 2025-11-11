@@ -16,7 +16,7 @@ import java.io.IOException;
 public class ImageUtil {
 
   static final double BYTE_SIZE_MULTIPLIER = 0.00095367432;
-  static final float MAX_IMAGE_COMPRESSION_SIZE_IN_KB = 1024f;
+  static final float MAX_IMAGE_COMPRESSION_SIZE_IN_KB = 500f;
 
   public MultipartFile compressImage(MultipartFile file) throws IOException {
     if (MAX_IMAGE_COMPRESSION_SIZE_IN_KB < file.getSize() * BYTE_SIZE_MULTIPLIER) {
