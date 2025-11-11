@@ -2,6 +2,7 @@ package com.diangraha_backend.diangraha_backend.service;
 import com.diangraha_backend.diangraha_backend.dto.AchievementRequest;
 import com.diangraha_backend.diangraha_backend.dto.AchievementResponse;
 import com.diangraha_backend.diangraha_backend.entity.Achievement;
+import com.diangraha_backend.diangraha_backend.entity.Client;
 import com.diangraha_backend.diangraha_backend.repository.AchievementRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -62,6 +63,7 @@ public class AchievementService {
         }
 
         if (imageFile != null && !imageFile.isEmpty()) {
+            fileStorageService.deleteFileByUrl(achievement.getImageUrl());
             String imageUrl = fileStorageService.storeFile(imageFile, "achievements");
             achievement.setImageUrl(imageUrl);
         }
@@ -71,6 +73,12 @@ public class AchievementService {
 
 
     public void deleteAchievement(Long id) {
+        if (!repository.existsById(id)) {
+            throw new RuntimeException("Brand not found");
+        }
+
+        Achievement achievement = repository.findById(id).get();
+        fileStorageService.deleteFileByUrl(achievement.getImageUrl());
         repository.deleteById(id);
     }
 

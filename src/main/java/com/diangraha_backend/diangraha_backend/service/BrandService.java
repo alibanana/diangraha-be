@@ -52,6 +52,7 @@ public class BrandService {
         brand.setName(request.getName());
         
         if (logoFile != null && !logoFile.isEmpty()) {
+            fileStorageService.deleteFileByUrl(brand.getLogoUrl());
             String logoPath = fileStorageService.storeFile(logoFile, "brands");
             brand.setLogoUrl(logoPath);
         }
@@ -64,6 +65,8 @@ public class BrandService {
         if (!brandRepository.existsById(id)) {
             throw new RuntimeException("Brand not found");
         }
+        Brand brand = brandRepository.findById(id).get();
+        fileStorageService.deleteFileByUrl(brand.getLogoUrl());
         brandRepository.deleteById(id);
     }
 

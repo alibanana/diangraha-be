@@ -48,6 +48,7 @@ public class ClientService {
         client.setName(request.getName());
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
+            fileStorageService.deleteFileByUrl(client.getImageUrl());
             String logoPath = fileStorageService.storeFile(imageUrl, "clients");
             client.setImageUrl(logoPath);
         }
@@ -59,6 +60,8 @@ public class ClientService {
         if (!clientRepository.existsById(id)) {
             throw new RuntimeException("Brand not found");
         }
+        Client client = clientRepository.findById(id).get();
+        fileStorageService.deleteFileByUrl(client.getImageUrl());
         clientRepository.deleteById(id);
     }
 

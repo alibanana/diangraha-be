@@ -263,6 +263,7 @@ public class ServiceService {
         // Update image hanya jika user upload file baru
         MultipartFile imageFile = request.getImageFile();
         if (imageFile != null && !imageFile.isEmpty()) {
+            fileStorageService.deleteFileByUrl(service.getImageUrl());
             String imagePath = fileStorageService.storeFile(imageFile, "services");
             service.setImageUrl(imagePath);
         }
@@ -288,6 +289,8 @@ public class ServiceService {
         if (!serviceRepository.existsById(id)) {
             throw new RuntimeException("Service not found");
         }
+        ServiceEntity service = serviceRepository.findById(id).get();
+        fileStorageService.deleteFileByUrl(service.getImageUrl());
         serviceRepository.deleteById(id);
     }
 
