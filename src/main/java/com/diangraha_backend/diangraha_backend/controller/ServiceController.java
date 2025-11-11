@@ -63,6 +63,10 @@ public class ServiceController {
         return ResponseEntity.ok(serviceService.getAllServicesLite());
     }
 
+    @GetMapping("/menu")
+    public ResponseEntity<List<ServiceMenuResponse>> getServiceMenuLite() {
+        return ResponseEntity.ok(serviceService.getAllServicesMenu());
+    }
 
     @GetMapping
     public ResponseEntity<List<ServiceResponse>> getAllServices() {
