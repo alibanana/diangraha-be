@@ -1,5 +1,6 @@
 package com.diangraha_backend.diangraha_backend.service;
 
+import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class FileStorageService {
 
@@ -67,11 +69,15 @@ public class FileStorageService {
     }
 
     public void deleteFileByUrl(String fileUrl) {
-        String key = fileUrl.substring(fileUrl.indexOf(".com/") + 5);
-        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-                .bucket(bucketName)
-                .key(key)
-                .build();
-        s3Client.deleteObject(deleteObjectRequest);
+        try {
+            String key = fileUrl.substring(fileUrl.indexOf(".com/") + 5);
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
+            s3Client.deleteObject(deleteObjectRequest);
+        } catch (NullPointerException e) {
+            log.error("Error deleting file as it does not exists");
+        }
     }
 }
